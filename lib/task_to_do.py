@@ -21,3 +21,6 @@ class TasktoDo:
         # Side Effects:
         #   Sets the instance of the task complete to True
         self.complete = True
+
+    def mark_incomplete(self):
+        self.complete = False
