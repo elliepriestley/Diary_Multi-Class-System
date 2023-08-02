@@ -1,5 +1,7 @@
 from lib.task_to_do import TasktoDo
 from lib.to_do_list import TodoList
+from lib.diary_entry import DiaryEntry
+from lib.diary import Diary
 import pytest
 
 """
@@ -142,3 +144,129 @@ def test_update_method_raises_error_when_updating_incomplete_task_to_incomplete(
         august_todolist.update(task1, False)
     error_message = str(e.value)
     assert error_message == "This task is already incomplete"
+
+
+"""
+Test that Diary Class method add, appends the entries list property of the self object with the diaryentry instance that is passed through as an argument
+"""
+
+def test_diary_class_add_method_appends_diaryentry_instance_to_public_list():
+    entry1 = DiaryEntry("title of entry", "contents of entry", {"Contact Name": "073932615"})
+    diary1 = Diary()
+    diary1.add(entry1)
+    assert diary1.entries_list == [entry1]
+
+"""
+Test that Diary Class method add, in the case that the diary entry includes a contact number,  appends the public contact_list with the contact information.
+"""
+
+def test_Diary_Class_contact_list_method_appends_list_contact_information():
+    entry1 = DiaryEntry("My Week 1", "Content of Diary Entry", {'Denise Chan': '07986527396'})
+    entry2 = DiaryEntry("My Week 2", "Content of Diary Entry Two", {'Another Name': '0937263846'})
+    entry3 = DiaryEntry("My Week 3", "Content of Diary Entry Three", {'Extra Name': '083629363'})
+    diary2023 = Diary()
+    diary2023.add(entry1)
+    diary2023.add(entry2)
+    diary2023.add(entry3)
+    assert diary2023.contact_list == [{'Denise Chan': '07986527396'}, {'Another Name': '0937263846'}, {'Extra Name': '083629363'}]
+    
+
+"""
+Test that Diary Class method contact_list returns a list of mobile numbers and their respective contact names from all instances of diary entry, when not all instances of diary entry have a contact number
+"""
+
+def test_Diary_Class_return_contacts_method_returns_list_contact_information_only_where_contact_exists():
+    entry1 = DiaryEntry("My Week 1", "Content of Diary Entry", {'Denise Chan': '07986527396'})
+    entry2 = DiaryEntry("My Week 2", "Content of Diary Entry Two")
+    entry3 = DiaryEntry("My Week 3", "Content of Diary Entry Three", {'Extra Name': '083629363'})
+    diary2023 = Diary()
+    diary2023.add(entry1)
+    diary2023.add(entry2)
+    diary2023.add(entry3)
+    assert diary2023.return_contacts() == [{'Denise Chan': '07986527396'}, {'Extra Name': '083629363'}]
+
+"""
+Test that Diary Class method contact_list returns a list of mobile numbers and their respective contact names from all instances of diary entry, when all instances of diary entry have a contact number
+"""
+
+def test_Diary_Class_return_contacts_method_returns_list_contact_information_where_all_entries_have_contact():
+    entry1 = DiaryEntry("My Week 1", "Content of Diary Entry", {'Denise Chan': '07986527396'})
+    entry2 = DiaryEntry("My Week 2", "Content of Diary Entry Two", {'Another Name': '0937263846'})
+    entry3 = DiaryEntry("My Week 3", "Content of Diary Entry Three", {'Extra Name': '083629363'})
+    diary2023 = Diary()
+    diary2023.add(entry1)
+    diary2023.add(entry2)
+    diary2023.add(entry3)
+    assert diary2023.return_contacts() == [{'Denise Chan': '07986527396'}, {'Another Name': '0937263846'}, {'Extra Name': '083629363'}]
+
+
+"""
+Test that Diary Class method read_all_entries returns a full list of all instances of the diaryentry class passed through the object diary instance
+"""
+
+def test_diary_class_read_all_entries_method_returns_list_of_all_diary_entries():
+    entry1 = DiaryEntry("My Week 1", "Content of Diary Entry", {'Denise Chan': '07986527396'})
+    entry2 = DiaryEntry("My Week 2", "Content of Diary Entry Two")
+    entry3 = DiaryEntry("My Week 3", "Content of Diary Entry Three")
+    diary2023 = Diary()
+    diary2023.add(entry1)
+    diary2023.add(entry2)
+    diary2023.add(entry3)
+    assert diary2023.read_all_entries() == [entry1, entry2, entry3]
+
+"""
+Test that both arguments of the Diary Class search_by_time_and_reading_speed are integers and raise an error message if they are not
+"""
+
+def test_both_arguments_for_Diary_class_search_by_time_and_reading_speed_are_integers():
+    entry1 = DiaryEntry("My Week 1", "Content of Diary Entry", {'Denise Chan': '07986527396'})
+    entry2 = DiaryEntry("My Week 2", "Content of Diary Entry Two")
+    entry3 = DiaryEntry("My Week 3", "Content of Diary Entry Three")
+    diary2023 = Diary()
+    diary2023.add(entry1)
+    diary2023.add(entry2)
+    diary2023.add(entry3)
+    with pytest.raises(Exception) as e:
+        diary2023.search_by_time_and_reading_speed('3', 7)
+        diary2023.search_by_time_and_reading_speed(8, '6')
+        diary2023.search_by_time_and_reading_speed('3', '10')
+    error_message = str(e.value)
+    assert error_message == "Invalid argument(s). Both arguments must be integers"
+
+
+"""Test that when Diary Class is initialised and one Diary Entry is added, the search_by_time_and_reading_speed will return None if the diary entry content is too long for the user to read, based on their time available and their reading speed """
+
+def test_diary_class_search_by_time_and_reading_speed_method_returns_None_if_available_entry_is_too_long_to_read():
+    entry1 = DiaryEntry("My Week 1", "One two three four five six seven eight nine ten", {'Denise Chan': '07986527396'})
+    diary2023 = Diary()
+    diary2023.add(entry1)
+    assert diary2023.search_by_time_and_reading_speed(1, 1) == None
+
+"""
+Test that when Diary class ia initialised and two Diary Entries are added (one that is too long for user to read, and one that is short enough for user to read) the search_by_time_and_reading_speed will return diary entry that is not too long for the user to read, based on their time available and their reading speed
+"""
+
+def test_diary_class_search_by_time_and_reading_speed_method_returns_shorter_entry_if_other_available_entry_is_too_long_to_read():
+    entry1 = DiaryEntry("My Week 1", "One two three four five six seven eight nine ten", {'Denise Chan': '07986527396'})
+    entry2 = DiaryEntry("My Week 3", "One two three four")
+    diary2023 = Diary()
+    diary2023.add(entry1)
+    diary2023.add(entry2)
+    assert diary2023.search_by_time_and_reading_speed(4, 2) == [entry2]
+
+
+"""
+Test that when Diary class ia initialised and four Diary Entries are added (1 that is too long for user to read, and three that are short enough for user to read) the search_by_time_and_reading_speed will return the three readable diary entries in a list.
+"""
+
+def test_diary_class_search_by_time_and_reading_speed_method_returns_list_of_multiple_readable_entries():
+    entry1 = DiaryEntry("My Week 1", "One two three four five six seven eight nine ten", {'Denise Chan': '07986527396'})
+    entry2 = DiaryEntry("My Week 3", "One two three four")
+    entry3 = DiaryEntry("My Week 3", "This is a test")
+    entry4 = DiaryEntry("My Week 3", "This entry is short enough to read")
+    diary2023 = Diary()
+    diary2023.add(entry1)
+    diary2023.add(entry2)
+    diary2023.add(entry3)
+    diary2023.add(entry4)
+    assert diary2023.search_by_time_and_reading_speed(1, 8) == [entry2, entry3, entry4]

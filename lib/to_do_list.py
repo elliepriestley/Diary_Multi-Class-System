@@ -1,13 +1,7 @@
 from lib.task_to_do import TasktoDo
 
 class TodoList:
-    # User-facing properties:
-    #   to_do_list: list of instances of TaskToDo
-    #   complete_list = list of complete instances of TaskToDo
-    #   incomplete_list = list of incomplete instances of TaskToDo
-
     def __init__(self):
-        # self.to_do_list: list of instances of TaskToDo
         self.to_do_list = []
         self.completed_list = []
         self.incompleted_list = []
@@ -27,8 +21,6 @@ class TodoList:
         return self.completed_list
     
     def update(self, task, complete_status):
-        #updates the task and changes it's complete status in the TaskToDo class
-        #adds it to the correct completed/incompleted list and removes it from the corresponding opposite list.
         if complete_status == True:
             if task.complete == False:
                 task.mark_complete()
